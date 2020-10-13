@@ -1,11 +1,22 @@
 package com.hackerrank.weather;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hackerrank.weather.model.Weather;
-import com.hackerrank.weather.repository.WeatherRepository;
-import com.jayway.jsonpath.JsonPath;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.BeforeEach;
+//import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,22 +26,17 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hackerrank.weather.model.Weather;
+import com.hackerrank.weather.repository.WeatherRepository;
+import com.jayway.jsonpath.JsonPath;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
-class WeatherApplicationTests {
+
+public class WeatherApplicationTests {
     @Autowired
     private MockMvc mockMvc;
 
@@ -65,6 +71,7 @@ class WeatherApplicationTests {
                 .andExpect(status().isCreated()).andReturn().getResponse();
 
         Integer id = JsonPath.parse(response.getContentAsString()).read("$.id");
+        System.out.println("**************** ID ************** " + id);
         assertEquals(true, weatherRepository.findById(id).isPresent());
 
     }
@@ -161,3 +168,5 @@ class WeatherApplicationTests {
                 .andExpect(status().isNotFound());
     }
 }
+
+
